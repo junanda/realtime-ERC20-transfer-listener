@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERC20 Transfer Listener</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    #log {
+      white-space: pre-wrap;
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      padding: 10px;
+      height: 400px;
+      overflow-y: scroll;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔄 ERC20 Transfer Events</h1>
+  <div id="log">Connecting...</div>
+
+  <script>
+    const logDiv = document.getElementById("log");
+    const ws = new WebSocket("wss://yourdomain.com/ws");
+
+    ws.onopen = () => {
+      logDiv.textContent = "Connected to WebSocket server...\n";
+    };
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const line = `From: ${data.from} \nTo: ${data.to} \nValue: ${data.value}\n---\n`;
+      logDiv.textContent += line;
+      logDiv.scrollTop = logDiv.scrollHeight;
+    };
+
+    ws.onerror = (error) => {
+      logDiv.textContent += `WebSocket error: ${error.message}\n`;
+    };
+  </script>
+</body>
+</html>
