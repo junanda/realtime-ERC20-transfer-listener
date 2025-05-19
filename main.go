@@ -6,14 +6,16 @@ import (
 	"log"
 	"math/big"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gorilla/websocket"
+	"github.com/joho/godotenv"
 )
 
 var upgrader = websocket.Upgrader{
@@ -34,8 +36,14 @@ var removeClient = make(chan *websocket.Conn)
 var broadcast = make(chan TransferEvent)
 
 func main() {
+	// Load .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	// Connect to Ethereum node
-	client, err := ethclient.Dial("wss://mainnet.infura.io/ws/v3/YOUR_INFURA_PROJECT_ID")
+	client, err := ethclient.Dial("wss://mainnet.infura.io/ws/v3/" + os.Getenv("INFURA_PROJECT_ID"))
 	if err != nil {
 		log.Fatalf("Failed to connect to Ethereum node: %v", err)
 	}
